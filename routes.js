@@ -45,14 +45,19 @@ const TabNavigator = createBottomTabNavigator({
         },
     },
     {
-        initialRouteName: 'App2',
+        initialRouteName: 'App1',
         tabBarPosition: 'bottom',
-        tabBarOptions: {style: {
-                backgroundColor: 'white',
+        tabBarOptions: {
+            labelStyle: {
+                fontSize: 20,
+                marginBottom:10
+            },
+            style: {
+                backgroundColor: '#17223b',
             },
             showLabel: true,
-            activeTintColor: 'steelblue',
-            inactiveTintColor: 'grey',
+            activeTintColor: '#ca3e47',
+            inactiveTintColor: 'white',
         },
     },
 );

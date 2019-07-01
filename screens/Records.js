@@ -1,23 +1,28 @@
 import React from 'react';
-import {StyleSheet, FlatList, View, StatusBar, Button} from 'react-native';
+import {StyleSheet, FlatList, View, StatusBar, Button, ImageBackground} from 'react-native';
 
 import Record from '../components/Record';
 
 
 export default class Records extends React.Component {
     static  navigationOptions = {
-        title: 'Records'
+        title: 'Records',
+        headerStyle: {
+            backgroundColor: '#0077e2',
+        },
+        headerTintColor: '#fff',
+        headerTitleStyle: {
+            fontWeight: 'bold',
+        },
     };
 
 
     state = {
         people: [
-            {name: 'One Man', dob: new Date().toDateString(), key: Math.random().toString()},
-            {name: 'Two Man', dob: new Date().toDateString(), key: Math.random().toString()},
-            {name: 'Three Man', dob: new Date().toDateString(), key: Math.random().toString()},
-            {name: 'Four Man', dob: new Date().toDateString(), key: Math.random().toString()},
-
-
+            {name: 'John Wick', dob: new Date().toDateString(), key: Math.random().toString()},
+            {name: 'Chad Bradley', dob: new Date().toDateString(), key: Math.random().toString()},
+            {name: 'Continentia', dob: new Date().toDateString(), key: Math.random().toString()},
+            {name: 'Man boy', dob: new Date().toDateString(), key: Math.random().toString()},
         ]
     };
 
@@ -29,8 +34,8 @@ export default class Records extends React.Component {
 
     render() {
         return (
-            <View style={styles.container}>
-                <StatusBar
+            <ImageBackground source={require('../assets/blue.jpg')} style={styles.container}>
+            <StatusBar
                     barStyle='dark-content'
                 />
 
@@ -46,9 +51,12 @@ export default class Records extends React.Component {
                             saveRecordCallback: this.saveRecordToState
                         })
                     }}
-                            title="Add"/>
+                            title="Add Record"
+                            color={'#59d4e8'}
+
+                    />
                 </View>
-            </View>
+            </ImageBackground>
         );
     }
 
@@ -65,12 +73,13 @@ const styles = StyleSheet.create({
     list: {
         marginTop: 20,
         flex: 10,
+        padding:10,
         alignItems: 'center',
         justifyContent: 'center',
     },
     buttonView: {
         width: "30%",
         margin: 10,
-        marginBottom: 30
+        marginBottom: 15
     }
 });

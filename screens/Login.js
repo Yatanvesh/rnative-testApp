@@ -24,14 +24,20 @@ function sleep(duration = 0) {
 export default class Login extends React.Component {
 
     static  navigationOptions = {
-        title: 'Login'
+        title: 'Login',
+        headerStyle: {
+            backgroundColor: '#248ea9',
+        },
+        headerTintColor: '#fff',
+        headerTitleStyle: {
+            fontWeight: 'bold',
+        },
     };
 
     state = {
         userName: '',
         password: '',
         transitionState: State.Launching,
-
     };
     toggleOpacity = new Animated.Value(0);
 

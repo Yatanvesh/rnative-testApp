@@ -11,18 +11,25 @@ import {
 import {Icon} from 'react-native-elements'
 import * as ImagePicker from 'expo-image-picker'
 
-let { width} = Dimensions.get('window');
+let {width} = Dimensions.get('window');
 
 import DisplayPicture from '../components/DisplayPicture';
 
 export default class Profile extends React.Component {
 
     static  navigationOptions = {
-        title: 'Profile'
+        title: 'Profile',
+        headerStyle: {
+            backgroundColor: '#248ea9'
+        },
+        headerTintColor: '#fff',
+        headerTitleStyle: {
+            fontWeight: 'bold',
+        },
     };
 
     state = {
-        user:{
+        user: {
             name: 'John Doe',
             phone: '1234567890',
             email: 'test@test.com',
@@ -37,38 +44,34 @@ export default class Profile extends React.Component {
         });
 
         if (!result.cancelled) {
-            this.setState({  user:{...this.state.user, imageUri: result.uri}  });
+            this.setState({user: {...this.state.user, imageUri: result.uri}});
         }
     };
 
     async componentWillMount() {
-        console.log('compo');
-
-            const value = await AsyncStorage.getItem('USER');
-            if (value !== null) {
-                console.log(value);
-                let user = JSON.parse(value);
-                this.setState({user});
-                console.log(this.state.user);
-            } else {
-                console.log('no users, initialising');
-                let user = {
-                    name: 'John Doe',
-                    phone: '1234567890',
-                    email: 'test@test.com',
-                    imageUri: null,
-                };
-                AsyncStorage.setItem('USER', JSON.stringify(user));
-            }
+        const value = await AsyncStorage.getItem('USER');
+        if (value !== null) {
+            console.log(value);
+            let user = JSON.parse(value);
+            this.setState({user});
+            console.log(this.state.user);
+        } else {
+            console.log('no users, initialising');
+            let user = {
+                name: 'John Doe',
+                phone: '1234567890',
+                email: 'test@test.com',
+                imageUri: null,
+            };
+            AsyncStorage.setItem('USER', JSON.stringify(user));
+        }
     }
 
-    onPressEdit = ()=>{
-
+    onPressEdit = () => {
         let {editing} = this.state;
         this.setState({editing: !this.state.editing});
 
-
-        if(editing){
+        if (editing) {
             let {user} = this.state;
             AsyncStorage.setItem('USER', JSON.stringify(user));
 
@@ -78,27 +81,28 @@ export default class Profile extends React.Component {
 
     render() {
         const {editing} = this.state;
-        let {imageUri, name,email,phone} = this.state.user;
+        let centerStyle = !editing ? {justifyContent: 'center'} : {};
+        let {imageUri, name, email, phone} = this.state.user;
         return (
             <KeyboardAvoidingView behavior="padding" enabled style={styles.container}>
                 <View style={styles.imageContainer}>
                     {
-                        editing?(
+                        editing ? (
                             <TouchableOpacity onPress={this.pickImage}>
                                 <DisplayPicture uri={imageUri} editing={editing}/>
                             </TouchableOpacity>
-                        ):(
+                        ) : (
                             <DisplayPicture uri={imageUri} editing={editing}/>
 
                         )
                     }
                     {
                         editing ? (
-                            <TextInput  style={styles.nameTextInput}
-                                        underlineColorAndroid="transparent"
-                                        onChangeText={(name)=>this.setState({user:{...this.state.user,name} })}
-                                        value={name}
-                                        placeholder={'Enter Your Name'}/>
+                            <TextInput style={styles.nameTextInput}
+                                       underlineColorAndroid="transparent"
+                                       onChangeText={(name) => this.setState({user: {...this.state.user, name}})}
+                                       value={name}
+                                       placeholder={'Enter Your Name'}/>
                         ) : (
                             <Text style={styles.name}>
                                 {name}
@@ -110,17 +114,20 @@ export default class Profile extends React.Component {
 
                 <View style={{flex: 2}}>
                     <View style={styles.editFieldContainer}>
-
-
-                        <View style={styles.editField}>
+                        <View style={[styles.editField, centerStyle]}>
                             <Icon size={30} color='steelblue' name='phone'/>
                             {
                                 editing ? (
-                                    <TextInput  style={styles.detailTextInput}
-                                                underlineColorAndroid="transparent"
-                                                onChangeText={(phone)=>this.setState({  user:{...this.state.user,phone}})}
-                                                value={phone}
-                                                placeholder={'Enter Phone Number'}/>
+                                    <TextInput style={styles.detailTextInput}
+                                               underlineColorAndroid="transparent"
+                                               onChangeText={(phone) => this.setState({
+                                                   user: {
+                                                       ...this.state.user,
+                                                       phone
+                                                   }
+                                               })}
+                                               value={phone}
+                                               placeholder={'Enter Phone Number'}/>
                                 ) : (
                                     <Text style={styles.detail}>
                                         {phone}
@@ -129,16 +136,21 @@ export default class Profile extends React.Component {
                             }
                         </View>
 
-                        <View style={styles.editField}>
+                        <View style={[styles.editField, centerStyle]}>
                             <Icon size={30} color='steelblue' name='mail'/>
                             {
-                                editing?(
-                                    <TextInput  style={styles.detailTextInput}
-                                                underlineColorAndroid="transparent"
-                                                onChangeText={(email)=>this.setState({ user:{...this.state.user,email}})}
-                                                value={email}
-                                                placeholder={'Enter Email'}/>
-                                ):(
+                                editing ? (
+                                    <TextInput style={styles.detailTextInput}
+                                               underlineColorAndroid="transparent"
+                                               onChangeText={(email) => this.setState({
+                                                   user: {
+                                                       ...this.state.user,
+                                                       email
+                                                   }
+                                               })}
+                                               value={email}
+                                               placeholder={'Enter Email'}/>
+                                ) : (
                                     <Text style={styles.detail}>
                                         {email}
                                     </Text>
@@ -165,6 +177,7 @@ const
             flex: 1,
             alignItems: 'center',
             justifyContent: 'center',
+            backgroundColor:'#e6f8f9'
         },
         imageContainer: {
             flex: 3,
@@ -226,15 +239,15 @@ const
             padding: 5,
             flexDirection: 'row'
         },
-        nameTextInput:{
+        nameTextInput: {
             fontSize: 35,
             color: 'white',
             fontWeight: 'bold',
             fontFamily: 'sans-serif-medium',
             fontStyle: 'italic',
             margin: 10,
-            backgroundColor:'rgba(255,255,255,0.2)',
-            borderRadius:10
+            backgroundColor: 'rgba(255,255,255,0.2)',
+            borderRadius: 10
         },
         detailTextInput: {
             fontSize: 22,
@@ -242,9 +255,9 @@ const
             fontWeight: 'bold',
             fontFamily: 'sans-serif-medium',
             marginLeft: 10,
-            backgroundColor:'rgba(0,0,0,0.2)',
-            borderRadius:10,
-            padding:5
+            backgroundColor: 'rgba(0,0,0,0.2)',
+            borderRadius: 10,
+            padding: 5
         },
 
     });
