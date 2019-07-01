@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, Text,FlatList, View, StatusBar, Button} from 'react-native';
+import {StyleSheet, TouchableOpacity,FlatList, View, StatusBar, Button} from 'react-native';
 
 import Record from '../components/Record';
 
@@ -14,16 +14,18 @@ export default class Records extends React.Component {
 
     state = {
         people: [
-            {name:'One Man', dob:'42452', key:Math.random().toString()},
-            {name:'One Man', dob:'42452', key:Math.random().toString()},
-            {name:'One Man', dob:'42452', key:Math.random().toString()},
-            {name:'One Man', dob:'42452', key:Math.random().toString()},
-            {name:'One Man', dob:'42452', key:Math.random().toString()},
-            {name:'One Man', dob:'42452', key:Math.random().toString()},
-            {name:'One Man', dob:'42452', key:Math.random().toString()},
-            {name:'One Man', dob:'42452', key:Math.random().toString()},
-            {name:'One Man', dob:'42452', key:Math.random().toString()},
+            {name:'One Man', dob:new Date().toDateString(), key:Math.random().toString()},
+            {name:'Two Man', dob:new Date().toDateString(), key:Math.random().toString()},
+            {name:'Three Man', dob:new Date().toDateString(), key:Math.random().toString()},
+
+
         ]
+    };
+
+    saveRecordToState = (record) =>{
+        console.log(record);
+        const people = [...this.state.people, record];
+        this.setState({people});
     };
 
     render() {
@@ -40,21 +42,11 @@ export default class Records extends React.Component {
                             />
                     </View>
                     <View style={styles.container}>
-                            <Button   onPress={()=>{}}
+                            <Button   onPress={()=>{this.props.navigation.navigate('AddRecord', {
+                                saveRecordCallback: this.saveRecordToState
+                            }) }}
                                       title="Add"   />
                     </View>
-
-                {/*<View style={styles.list}>*/}
-                {/*    <FlatList*/}
-                {/*        data={this.state.people}*/}
-                {/*        renderItem={({item}) => <Record name={item.name} dob={item.dob}>{item.key}</Record>}*/}
-                {/*    />*/}
-                {/*</View>*/}
-                {/*<View styles={styles.button}>*/}
-                {/*    <Button   onPress={()=>{}}*/}
-                {/*              title="Add"   />*/}
-                {/*</View>*/}
-
             </View>
         );
     }
@@ -69,7 +61,8 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     list:{
-        flex:7,
+        marginTop:20,
+        flex:10,
         alignItems: 'center',
         justifyContent: 'center',
     },
