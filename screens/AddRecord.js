@@ -14,17 +14,14 @@ export default class Record extends React.Component {
     async pickDate() {
         try {
             const {action, year, month, day} = await DatePickerAndroid.open({
-                // Use `new Date()` for current date.
-                // May 25 2020. Month 0 is January.
-                date: new Date(2020, 4, 25),
+                date: new Date(),
             });
             if (action !== DatePickerAndroid.dismissedAction) {
-                console.log(year, month, day, 'nice');
                 let dob = new Date(year, month, day).toDateString();
                 this.setState({dob});
             }
         } catch ({code, message}) {
-            console.warn('Cannot open date picker', message);
+            console.warn('Cannot open date picker, error', message);
         }
     }
 
@@ -67,7 +64,7 @@ export default class Record extends React.Component {
 
                 <View style={styles.inputFields}>
 
-                    <View style={styles.attributeViews}>
+                    {/*<View style={styles.attributeViews}>*/}
                         <Text style={styles.inputTitle}>
                             Name:
                         </Text>
@@ -77,9 +74,10 @@ export default class Record extends React.Component {
                                 underlineColorAndroid="transparent"
                                 onChangeText={(name) => this.setState({name})}
                                 value={this.state.name}
+                                placeholder={'Enter Your Name'}
                             />
                         </View>
-                    </View>
+                    {/*</View>*/}
                     <View style={styles.attributeViews}>
                         <Text style={styles.inputTitle}>
                             Date Of Birth:
@@ -121,7 +119,7 @@ const styles = StyleSheet.create({
         borderColor: 'black',
         borderRadius: 5,
         borderWidth: 2,
-        width: 300,
+        width: '80%',
         padding: 10,
         marginTop: 15,
         margin: 10,
