@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, TouchableOpacity, FlatList, View, StatusBar, Button} from 'react-native';
+import {StyleSheet, FlatList, View, StatusBar, Button} from 'react-native';
 
 import Record from '../components/Record';
 

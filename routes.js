@@ -20,10 +20,13 @@ const RecordsAppNavigator = createStackNavigator(
     },
 );
 
-const RecordsAppNavigator2 = createStackNavigator(
+const LoginAppNavigator = createStackNavigator(
     {
         Login: {
             screen: Login,
+        },
+        Profile:{
+            screen:Profile
         }
     },
     {
@@ -38,7 +41,7 @@ const TabNavigator = createBottomTabNavigator({
             screen: RecordsAppNavigator,
         },
         App2: {
-            screen: RecordsAppNavigator2,
+            screen: LoginAppNavigator,
         },
     },
     {
@@ -46,17 +49,12 @@ const TabNavigator = createBottomTabNavigator({
         tabBarPosition: 'bottom',
         tabBarOptions: {style: {
                 backgroundColor: 'white',
-                height:50
             },
             showLabel: true,
-
             activeTintColor: 'steelblue',
             inactiveTintColor: 'grey',
-            renderIndicator: () => null,
         },
     },
 );
-
-
 
 export default createAppContainer(TabNavigator);

@@ -23,6 +23,10 @@ function sleep(duration = 0) {
 
 export default class Login extends React.Component {
 
+    static  navigationOptions = {
+        title: 'Login'
+    };
+
     state = {
         userName: '',
         password: '',
@@ -72,9 +76,11 @@ export default class Login extends React.Component {
     };
 
     submit = () =>{
-        if(this.validateCredentials())
-            console.log("all good");
-        ToastAndroid.show('Wrong Username or Password!', ToastAndroid.SHORT);
+        if(this.validateCredentials()){
+            this.props.navigation.navigate('Profile');
+        }
+
+        else ToastAndroid.show('Wrong Username or Password!', ToastAndroid.SHORT);
 
     };
 
@@ -96,7 +102,6 @@ export default class Login extends React.Component {
                                 submitCB={this.submit}
 
                             />
-
                         </Animated.View>
 
 

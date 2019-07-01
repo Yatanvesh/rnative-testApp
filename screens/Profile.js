@@ -1,111 +1,250 @@
 import React from 'react';
-import {StyleSheet, Dimensions, TextInput, View, Text, TouchableOpacity} from 'react-native';
+import {
+    StyleSheet,
+    TextInput,
+    View,
+    KeyboardAvoidingView,
+    TouchableOpacity,
+    Text, Dimensions,
+    AsyncStorage
+} from 'react-native';
 import {Icon} from 'react-native-elements'
+import * as ImagePicker from 'expo-image-picker'
 
-let {height, width} = Dimensions.get('window');
+let { width} = Dimensions.get('window');
 
-const LoginBox = ({userName, password, userNameChangedCB,passwordChangedCB, submitCB}) => {
-    return (
-        <View style={styles.container}>
-            <View style={styles.textInputContainer}>
-                <View style={styles.icon}>
-                    <Icon
-                        name='person'/>
+import DisplayPicture from '../components/DisplayPicture';
+
+export default class Profile extends React.Component {
+
+    static  navigationOptions = {
+        title: 'Profile'
+    };
+
+    state = {
+        user:{
+            name: 'John Doe',
+            phone: '1234567890',
+            email: 'test@test.com',
+            imageUri: null,
+        },
+        editing: false
+    };
+
+    pickImage = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.All,
+        });
+
+        if (!result.cancelled) {
+            this.setState({  user:{...this.state.user, imageUri: result.uri}  });
+        }
+    };
+
+    async componentWillMount() {
+        console.log('compo');
+
+            const value = await AsyncStorage.getItem('USER');
+            if (value !== null) {
+                console.log(value);
+                let user = JSON.parse(value);
+                this.setState({user});
+                console.log(this.state.user);
+            } else {
+                console.log('no users, initialising');
+                let user = {
+                    name: 'John Doe',
+                    phone: '1234567890',
+                    email: 'test@test.com',
+                    imageUri: null,
+                };
+                AsyncStorage.setItem('USER', JSON.stringify(user));
+            }
+    }
+
+    onPressEdit = ()=>{
+
+        let {editing} = this.state;
+        this.setState({editing: !this.state.editing});
+
+
+        if(editing){
+            let {user} = this.state;
+            AsyncStorage.setItem('USER', JSON.stringify(user));
+
+        }
+    };
+
+
+    render() {
+        const {editing} = this.state;
+        let {imageUri, name,email,phone} = this.state.user;
+        return (
+            <KeyboardAvoidingView behavior="padding" enabled style={styles.container}>
+                <View style={styles.imageContainer}>
+                    {
+                        editing?(
+                            <TouchableOpacity onPress={this.pickImage}>
+                                <DisplayPicture uri={imageUri} editing={editing}/>
+                            </TouchableOpacity>
+                        ):(
+                            <DisplayPicture uri={imageUri} editing={editing}/>
+
+                        )
+                    }
+                    {
+                        editing ? (
+                            <TextInput  style={styles.nameTextInput}
+                                        underlineColorAndroid="transparent"
+                                        onChangeText={(name)=>this.setState({user:{...this.state.user,name} })}
+                                        value={name}
+                                        placeholder={'Enter Your Name'}/>
+                        ) : (
+                            <Text style={styles.name}>
+                                {name}
+                            </Text>
+                        )
+                    }
+
                 </View>
 
-                <TextInput
-                    style={styles.textInput}
-                    underlineColorAndroid="transparent"
-                    onChangeText={userNameChangedCB}
-                    value={userName}
-                    autoCapitalize='none'
-                    placeholder={'Username'}
-                />
-            </View>
-            <View style={styles.textInputContainer}>
-                <View style={styles.icon}>
-                    <Icon
-                        name='lock'/>
+                <View style={{flex: 2}}>
+                    <View style={styles.editFieldContainer}>
+
+
+                        <View style={styles.editField}>
+                            <Icon size={30} color='steelblue' name='phone'/>
+                            {
+                                editing ? (
+                                    <TextInput  style={styles.detailTextInput}
+                                                underlineColorAndroid="transparent"
+                                                onChangeText={(phone)=>this.setState({  user:{...this.state.user,phone}})}
+                                                value={phone}
+                                                placeholder={'Enter Phone Number'}/>
+                                ) : (
+                                    <Text style={styles.detail}>
+                                        {phone}
+                                    </Text>
+                                )
+                            }
+                        </View>
+
+                        <View style={styles.editField}>
+                            <Icon size={30} color='steelblue' name='mail'/>
+                            {
+                                editing?(
+                                    <TextInput  style={styles.detailTextInput}
+                                                underlineColorAndroid="transparent"
+                                                onChangeText={(email)=>this.setState({ user:{...this.state.user,email}})}
+                                                value={email}
+                                                placeholder={'Enter Email'}/>
+                                ):(
+                                    <Text style={styles.detail}>
+                                        {email}
+                                    </Text>
+                                )
+                            }
+                        </View>
+                    </View>
                 </View>
-                <TextInput
-                    style={styles.textInput}
-                    underlineColorAndroid="transparent"
-                    onChangeText={passwordChangedCB}
-                    autoCapitalize='none'
-                    secureTextEntry
-                    placeholder={'Password'}
-                    value={password}
-                />
-            </View>
+                <View style={{flex: 1.1}}>
+                    <TouchableOpacity style={styles.buttonContainer} onPress={this.onPressEdit}>
+                        <Text style={styles.buttonTitle}>{editing ? 'Save' : 'Edit'}</Text>
+                    </TouchableOpacity>
+                </View>
+            </KeyboardAvoidingView>
+        )
+    }
 
-            <TouchableOpacity style={styles.loginButtonContainer} onPress={submitCB}>
-                <Text style={styles.loginButtonTitle}>Login</Text>
-            </TouchableOpacity>
+}
 
 
+const
+    styles = StyleSheet.create({
+        container: {
+            flex: 1,
+            alignItems: 'center',
+            justifyContent: 'center',
+        },
+        imageContainer: {
+            flex: 3,
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: '#384259',
+            borderRadius: 15,
+            width: '95%',
+            margin: 10
+        },
+        name: {
+            fontSize: 35,
+            color: 'white',
+            fontWeight: 'bold',
+            fontFamily: 'sans-serif-medium',
+            fontStyle: 'italic',
+            margin: 10
 
-        </View>
-    )
-};
-//
-// const styles = StyleSheet.create({
-//     container: {
-//         height: 190,
-//         backgroundColor:'rgba(255,255,255,0.1)',
-//         padding:20,
-//         borderRadius:30
-//     },
-//     buttonGroup: {
-//         flex: 1,
-//         flexDirection: 'row',
-//         alignItems: 'center',
-//         justifyContent: 'center',
-//     },
-//     textInputContainer: {
-//         borderColor: '#D6D7DA',
-//         borderRadius: 20,
-//         borderWidth: 1,
-//         marginBottom: 5,
-//         marginTop: 5,
-//         backgroundColor: 'rgba(174,239,240,0.3)',
-//         flex: 1,
-//         flexDirection: 'row'
-//     },
-//     loginButtonContainer:{
-//         borderRadius: 20,
-//         borderWidth: 1,
-//         marginBottom: 3,
-//         marginTop: 15,
-//         backgroundColor: '#ff165d',
-//         flex: 1,
-//         alignItems: 'center',
-//         justifyContent: 'center',
-//     },
-//     loginButtonTitle:{
-//         height: 35,
-//         padding: 5,
-//         fontSize: 16,
-//         fontWeight: 'bold',
-//
-//     },
-//     textInput: {
-//         height: 35,
-//         padding: 5,
-//         fontSize: 16,
-//         width: width * 0.7
-//     },
-//     icon: {
-//         height: 35,
-//         padding: 5,
-//         fontSize: 16
-//     },
-//     buttonView: {
-//         flex: 1,
-//         margin: 10,
-//         marginBottom: 30,
-//         backgroundColor: '#ff165d',
-//         borderRadius: 20
-//     }
-// });
+        },
+        detail: {
+            fontSize: 22,
+            color: 'steelblue',
+            fontWeight: 'bold',
+            fontFamily: 'sans-serif-medium',
+            marginLeft: 10
+        },
+        buttonContainer: {
+            borderRadius: 20,
+            borderWidth: 1,
+            marginBottom: 10,
+            marginTop: 15,
+            backgroundColor: '#ff165d',
+            alignItems: 'center',
+            justifyContent: 'center',
+            height: 50,
+            width: 100
+        },
+        buttonTitle: {
+            height: 35,
+            padding: 5,
+            fontSize: 20,
+            color: 'white',
+            fontWeight: 'bold',
+        },
+        editFieldContainer: {
+            width: width * 0.9,
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderRadius: 8,
+            borderColor: 'black',
+            borderWidth: 1,
+            padding: 5,
+            margin: 5,
+        },
+        editField: {
+            alignItems: 'center',
+            width: width * 0.8,
+            margin: 10,
+            padding: 5,
+            flexDirection: 'row'
+        },
+        nameTextInput:{
+            fontSize: 35,
+            color: 'white',
+            fontWeight: 'bold',
+            fontFamily: 'sans-serif-medium',
+            fontStyle: 'italic',
+            margin: 10,
+            backgroundColor:'rgba(255,255,255,0.2)',
+            borderRadius:10
+        },
+        detailTextInput: {
+            fontSize: 22,
+            color: 'steelblue',
+            fontWeight: 'bold',
+            fontFamily: 'sans-serif-medium',
+            marginLeft: 10,
+            backgroundColor:'rgba(0,0,0,0.2)',
+            borderRadius:10,
+            padding:5
+        },
 
-export default LoginBox;
+    });

@@ -2,7 +2,7 @@ import React from 'react';
 import {StyleSheet, Dimensions, TextInput, View, Text, TouchableOpacity} from 'react-native';
 import {Icon} from 'react-native-elements'
 
-let {height, width} = Dimensions.get('window');
+let { width} = Dimensions.get('window');
 
 const LoginBox = ({userName, password, userNameChangedCB,passwordChangedCB, submitCB}) => {
     return (
@@ -10,6 +10,7 @@ const LoginBox = ({userName, password, userNameChangedCB,passwordChangedCB, subm
             <View style={styles.textInputContainer}>
                 <View style={styles.icon}>
                     <Icon
+                        color='white'
                         name='person'/>
                 </View>
 
@@ -20,12 +21,14 @@ const LoginBox = ({userName, password, userNameChangedCB,passwordChangedCB, subm
                     value={userName}
                     autoCapitalize='none'
                     placeholder={'Username'}
+
                 />
             </View>
             <View style={styles.textInputContainer}>
                 <View style={styles.icon}>
                     <Icon
-                        name='lock'/>
+                        color='white'
+                        name='lock' />
                 </View>
                 <TextInput
                     style={styles.textInput}
@@ -35,6 +38,7 @@ const LoginBox = ({userName, password, userNameChangedCB,passwordChangedCB, subm
                     secureTextEntry
                     placeholder={'Password'}
                     value={password}
+
                 />
             </View>
 
@@ -92,7 +96,8 @@ const styles = StyleSheet.create({
         height: 35,
         padding: 5,
         fontSize: 16,
-        width: width * 0.7
+        width: width * 0.7,
+        color:'white'
     },
     icon: {
         height: 35,
